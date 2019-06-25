@@ -105,7 +105,7 @@ bool init_session(QString ip) {
 
 void move(Player* player) {
     int x = 0, y = 0;
-    cout << "Введите координаты " << character << ": ";
+    cout << "Введите координаты " << character << ": " << endl;
     cin >> x >> y;
     x--;
     y--;

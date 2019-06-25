@@ -112,7 +112,8 @@ bool Board::save() {
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++)
             s += matrix[i][j]->getChar();
-        s += '\n';
+        if (i < M - 1)
+            s += '\n';
     }
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save.php?board=" + s;
     QNetworkAccessManager manager;
@@ -139,7 +140,7 @@ void Board::load() {
         return;
 
     QByteArray contents = response->readAll();
-    for (int i = 0; i < M * N; i++) {
+    for (int i = 0; i < contents.length(); i++) {
         int column = i % N;
         *matrix[(i - column) / N][column] = contents[i];
     }
