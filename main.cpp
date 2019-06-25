@@ -5,11 +5,13 @@
 #include <QCoreApplication>
 #include <QHostAddress>
 #include <QNetworkInterface>
-#include <qnetworkaccessmanager.h>
+#include <QNetworkAccessManager>
 #include <QNetworkReply>
 
 #define DELIMETER '\n'
+#define TIMEOUT 100000000000
 
+static char character = SPACE;
 static Board* board;
 static int M = 3, N = 3;
 
@@ -24,28 +26,60 @@ QString get_ip() {
     return "";
 }
 bool close_session() {
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?clear";
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?clear=1";
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    cout << "Ожидание закрытия игровой сессии..." << endl;
     return contents.isEmpty();
+}
+
+long wait(bool (*f)(), string msg) {
+    cout << msg << endl;
+    long timeout = TIMEOUT;
+    while (!f() && timeout)
+        timeout--;
+    return timeout;
+}
+
+char rival_character() {
+    srand(static_cast<unsigned>(time(nullptr)));
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/session";
+    QNetworkAccessManager manager;
+    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
+    QEventLoop event;
+    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    event.exec();
+    QByteArray contents = response->readAll();
+    if (contents.isEmpty()) {
+        char c[2] = {'X', 'O'};
+        return c[rand() % 2];
+    }
+    return contents.split(SPACE)[1][0];
+}
+
+bool rival_move() {
+    Board* old = new Board(M, N);
+    memcpy(old, board, sizeof(Board));
+    board->load();
+    return old != board;
 }
 
 bool init_session(QString ip) {
     close_session();
+    character = rival_character() == 'X' ? 'O' : 'X';
+
     cout << ip.toStdString() << endl;
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + DELIMETER;
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + SPACE + character + DELIMETER;
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return contents.isEmpty();
+    return contents.isEmpty() && character != SPACE;
 }
 
 bool check_session() {
@@ -90,16 +124,19 @@ void move(Player* player) {
     }
     player->setPos(x, y);
     board->set(player);
+    board->save();
 }
 char start() {
     board = new Board(M, N);
     do {
-        Player *player = new Player(new Point(), 'X');
+        Player *player = new Player(new Point(), character);
         move(player);
+        if (!wait(rival_move, "Потеряна связь с игороком...")) {
+            cout << "Потеряна связь с игороком...";
+            return 'T';
+        }
         if (board->isTerminal())
             break;
-        player = new Player(new Point(), 'O');
-        move(player);
 
     } while (!board->isTerminal());
     return board->win('X');
@@ -108,34 +145,28 @@ char start() {
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    const string s = "Ожидание закрытия игровой сессии...";
     if (!init_session(get_ip())) {
         cout << "Не удалось инициализировать игровую сессию." << endl;
-        while (!close_session());
+        wait(close_session, s);
         return 0;
     }
-    long timeout = 60000000000;
-    int quit = '\0';
-    cout << "Ожидание подключения игрока..." << endl;
-    while (!check_session() && timeout)
-        timeout--;
 
-    if (quit == 'q') {
-        while (!close_session());
-        return 0;
-    }
-    if (!timeout) {
+    if (!wait(check_session, "Ожидание подключения игрока...")) {
         cout << "Нет подключения." << endl;
-        while (!close_session());
         return 0;
     }
-    cout << "Вы - X" << endl << endl;
+
+    cout << "Вы - " << character << endl << endl;
     char done = start();
-    if(done == 'X')
-        cout << "X победил." << endl;
+    if (done == 'T')
+        return 0;
+    if(done == character)
+        cout << "Вы победили." << endl;
     else if (board->full())
         cout << "Ничья." << endl;
     else
-        cout << "O победил." << endl;
-    while (!close_session());
+        cout << "Вы проиграли." << endl;
+    wait(close_session, s);
     return 0;
 }

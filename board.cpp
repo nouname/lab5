@@ -37,7 +37,8 @@ bool Board::full() {
 }
 
 void Board::display() {
-    cout << string((size_t)N * 2 + 1, '-');
+    load();
+    cout << string(static_cast<unsigned>(N * 2 + 1), '-');
     for(int i = 0; i < M; i++)
     {
         cout << '\n';
@@ -52,7 +53,7 @@ void Board::display() {
         }
     }
     cout << "|\n";
-    cout << string((size_t)N * 2 + 1, '-');
+    cout << string(static_cast<unsigned>(N * 2 + 1), '-');
     cout << '\n';
 }
 

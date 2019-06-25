@@ -24,7 +24,6 @@ private:
     Player ***matrix;
     void init();
     void display();
-    const Player *none = new Player(new Point(0, 0), SPACE);
 };
 
 #endif // BOARD_H
