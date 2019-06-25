@@ -127,7 +127,9 @@ void move(Player* player) {
     board->set(player);
     board->save();
 }
+
 char start() {
+    char exit = SPACE;
     board = new Board(M, N);
     do {
         Player *player = new Player(new Point(), character);
@@ -135,12 +137,12 @@ char start() {
         cout << "Ожидание хода игрока..." << endl;
         if (!wait(rival_move, "Потеряна связь с игороком...")) {
             cout << "Потеряна связь с игороком...";
-            return 'T';
+            exit = 'T';
         }
         if (board->isTerminal())
             break;
 
-    } while (!board->isTerminal());
+    } while (!board->isTerminal() && exit == SPACE);
     return board->win('X');
 }
 
@@ -159,7 +161,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    cout << "Вы - " << character << endl << endl;
+    cout << "Вы - " << character << endl;
     char done = start();
     if (done == 'T')
         return 0;
