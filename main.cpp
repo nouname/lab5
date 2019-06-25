@@ -136,7 +136,6 @@ char start() {
     if (character == 'X')
         move(player);
     do {
-        board->load();
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
