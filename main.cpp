@@ -82,7 +82,6 @@ bool check_session() {
 }
 
 bool rival_move() {
-    board->load();
     return !board->equal(old);
 }
 
@@ -125,6 +124,7 @@ void move(Player* player) {
     player->setPos(x, y);
     board->set(player);
     board->save();
+    board->load();
     board->display();
 }
 
