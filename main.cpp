@@ -23,19 +23,6 @@ QString get_ip() {
     }
     return "";
 }
-
-bool init_session(QString ip) {
-    cout << ip.toStdString() << endl;
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + DELIMETER;
-    QNetworkAccessManager manager;
-    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
-    QEventLoop event;
-    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
-    event.exec();
-    QByteArray contents = response->readAll();
-    return contents.isEmpty();
-}
-
 bool close_session() {
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?clear";
     QNetworkAccessManager manager;
@@ -46,7 +33,19 @@ bool close_session() {
     QByteArray contents = response->readAll();
     cout << "Ожидание закрытия игровой сессии..." << endl;
     return contents.isEmpty();
+}
 
+bool init_session(QString ip) {
+    close_session();
+    cout << ip.toStdString() << endl;
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + DELIMETER;
+    QNetworkAccessManager manager;
+    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
+    QEventLoop event;
+    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    event.exec();
+    QByteArray contents = response->readAll();
+    return contents.isEmpty();
 }
 
 bool check_session() {
@@ -115,11 +114,11 @@ int main(int argc, char *argv[])
         return 0;
     }
     long timeout = 60000000000;
-    char quit = '\0';
-    cout << "Ожидание подключения игрока." << endl << "Введите q для выхода..." << endl;
-    while (!check_session() && timeout && (quit = getchar()) != 'q') {
+    int quit = '\0';
+    cout << "Ожидание подключения игрока..." << endl;
+    while (!check_session() && timeout)
         timeout--;
-    }
+
     if (quit == 'q') {
         while (!close_session());
         return 0;
