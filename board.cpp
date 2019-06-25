@@ -139,7 +139,7 @@ void Board::load() {
         return;
 
     QByteArray contents = response->readAll();
-    for (int i = 0; i < contents.length(); i++) {
+    for (int i = 0; i < M * N; i++) {
         int column = i % N;
         *matrix[(i - column) / N][column] = contents[i];
     }
