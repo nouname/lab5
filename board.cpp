@@ -94,7 +94,6 @@ char Board::win(char player) {
 }
 
 bool Board::isTerminal() {
-    display();
     return full() || win('X') != SPACE || win('O') != SPACE;
 }
 
@@ -112,6 +111,7 @@ bool Board::save() {
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++)
             s += matrix[i][j]->getChar();
+
     }
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save.php?board=" + s;
     QNetworkAccessManager manager;
