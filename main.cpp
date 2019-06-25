@@ -82,6 +82,7 @@ bool check_session() {
 }
 
 bool rival_move() {
+    old->load();
     return !board->equal(old);
 }
 
@@ -103,6 +104,7 @@ bool init_session(QString ip) {
 
 void move(Player* player) {
     int x = 0, y = 0;
+    board->load();
     cout << "Введите координаты " << character << ": " << endl;
     cin >> x >> y;
     x--;
@@ -123,9 +125,7 @@ void move(Player* player) {
     }
     player->setPos(x, y);
     board->set(player);
-    old->load();
     board->save();
-    board->load();
     board->display();
 }
 
