@@ -111,7 +111,7 @@ bool Board::save() {
     QString s = "";
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++)
-            s += QString(matrix[i][j]->getChar());
+            s += matrix[i][j]->getChar();
         s += "\n";
     }
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save.php?board=" + s;
@@ -138,10 +138,11 @@ void Board::load() {
     if (status != 200)
         return;
 
-    string contents = response->readAll().data();
-    for (unsigned i = 0; i < contents.length(); i++) {
-        unsigned column = i % static_cast<unsigned>(N);
-        *matrix[(i - column) / static_cast<unsigned>(N)][column] = contents[i];
+    QByteArray contents = response->readAll();
+    for (int i = 0; i < contents.length(); i++) {
+        int column = i % N;
+        if (contents[i] == 'X' || contents[i] == 'O' || contents[i] == SPACE)
+            *matrix[(i - column) / N][column] = contents[i];
     }
 }
 
