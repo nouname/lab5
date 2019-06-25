@@ -14,7 +14,7 @@
 #define TIMEOUT 100000000000
 
 static char character = SPACE;
-static Board* board;
+static Board *board, *old;
 static int M = 3, N = 3;
 
 using namespace std;
@@ -82,9 +82,7 @@ bool check_session() {
 }
 
 bool rival_move() {
-    Board* old = board;
-    board->load();
-    return !old->equal(board);
+    return !board->equal(old);
 }
 
 bool init_session(QString ip) {
@@ -131,11 +129,13 @@ void move(Player* player) {
 
 char start() {
     board = new Board(M, N);
+    old = new Board(M, N);
     Player *player = new Player(new Point(), character);
     board->display();
     if (character == 'X')
         move(player);
     do {
+        old->load();
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
