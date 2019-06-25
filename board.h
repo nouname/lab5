@@ -16,7 +16,7 @@ public:
     void set(Player* player);
     Player *get(int x, int y);
     bool save();
-    Board* load();
+    void load();
     bool equal(Board *other);
     void display();
 
