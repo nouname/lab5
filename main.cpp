@@ -33,7 +33,7 @@ bool init_session(QString ip) {
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return contents.isEmpty();
+    return !contents.isEmpty();
 }
 
 bool close_session() {
@@ -44,7 +44,7 @@ bool close_session() {
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return contents.isEmpty();
+    return !contents.isEmpty();
 }
 
 bool check_session() {
@@ -107,14 +107,20 @@ char start() {
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    if (!init_session(get_ip()))
+    if (!init_session(get_ip())) {
         cout << "Не удалось инициализировать игровую сессию." << endl;
+        cout << "Ожидание закрытия игровой сессии..." << endl;
+        while (!close_session());
+        return 0;
+    }
     long timeout = 60000000000;
     cout << "Ожидание подключения игрока..." << endl;
     while (!check_session() && timeout)
         timeout--;
     if (!timeout) {
         cout << "Нет подключения." << endl;
+        cout << "Ожидание закрытия игровой сессии..." << endl;
+        while (!close_session());
         return 0;
     }
     cout << "Вы - X" << endl << endl;
@@ -125,7 +131,6 @@ int main(int argc, char *argv[])
         cout << "Ничья." << endl;
     else
         cout << "O победил." << endl;
-
     cout << "Ожидание закрытия игровой сессии..." << endl;
     while (!close_session());
     return 0;
