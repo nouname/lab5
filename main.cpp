@@ -13,6 +13,8 @@
 static Board* board;
 static int M = 3, N = 3;
 
+using namespace std;
+
 QString get_ip() {
     const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
     for (const QHostAddress &address: QNetworkInterface::allAddresses()) {
@@ -23,6 +25,7 @@ QString get_ip() {
 }
 
 bool init_session(QString ip) {
+    cout << ip.toStdString() << endl;
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + DELIMETER;
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
@@ -66,20 +69,20 @@ bool check_session() {
 void move(Player* player) {
     int x = 0, y = 0;
 
-    std::cout << "Введите координаты Х." << std::endl;
-    std::cin >> x >> y;
+    cout << "Введите координаты Х." << endl;
+    cin >> x >> y;
     x--;
     y--;
 
     if (x < 0 || y < 0 || x >= M || y >= N || *board->get(x, y) != SPACE)
     {
-        std::cout << "Некорректный ход, попробуйте снова." << std::endl;
+        cout << "Некорректный ход, попробуйте снова." << endl;
         return move(player);
     }
     else {
         for (int i = x + 1; i < M; i++) {
             if (*board->get(i, y) == SPACE) {
-                std::cout << "Некорректный ход, попробуйте снова." << std::endl;
+                cout << "Некорректный ход, попробуйте снова." << endl;
                 return move(player);
             }
         }
@@ -105,25 +108,25 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     if (!init_session(get_ip()))
-        std::cout << "Не удалось инициализировать игровую сессию." << std::endl;
+        cout << "Не удалось инициализировать игровую сессию." << endl;
     long timeout = 60000000000;
-    std::cout << "Ожидание подключения игрока..." << std::endl;
+    cout << "Ожидание подключения игрока..." << endl;
     while (!check_session() && timeout)
         timeout--;
     if (!timeout) {
-        std::cout << "Нет подключения." << std::endl;
+        cout << "Нет подключения." << endl;
         return 0;
     }
-    std::cout << "Вы - X" << std::endl << std::endl;
+    cout << "Вы - X" << endl << endl;
     char done = start();
     if(done == 'X')
-        std::cout << "X победил." << std::endl;
+        cout << "X победил." << endl;
     else if (board->full())
-        std::cout << "Ничья." << std::endl;
+        cout << "Ничья." << endl;
     else
-        std::cout << "O победил." << std::endl;
+        cout << "O победил." << endl;
 
-    std::cout << "Ожидание закрытия игровой сессии..." << std::endl;
+    cout << "Ожидание закрытия игровой сессии..." << endl;
     while (!close_session());
     return 0;
 }
