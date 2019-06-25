@@ -14,7 +14,6 @@ Board::Board(int M, int N)
     this->M = M;
     this->N = N;
     init();
-    display();
 }
 
 void Board::init()
@@ -37,7 +36,6 @@ bool Board::full() {
 }
 
 void Board::display() {
-    load();
     cout << string(static_cast<unsigned>(N * 2 + 1), '-');
     for(int i = 0; i < M; i++)
     {
@@ -126,8 +124,7 @@ bool Board::save() {
     return !contents.isEmpty();
 
 }
-
-bool Board::load() {
+Board* Board::load() {
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/board";
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
@@ -139,12 +136,26 @@ bool Board::load() {
     int status = statusCode.toInt();
 
     if (status != 200)
-        return false;
+        return nullptr;
 
+    Board* board = new Board(M, N);
     QByteArray contents = response->readAll();
     for (int i = 0; i < contents.length(); i++) {
         int column = i % N;
-        *matrix[(i - column) / N][column] = contents[i];
+        *board->matrix[(i - column) / N][column] = contents[i];
+    }
+    return board;
+}
+
+bool Board::equal(Board *other)
+{
+    if (M != other->M || N != other->N)
+        return false;
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
+            if (matrix[i][j] != other->matrix[i][j])
+                return false;
+        }
     }
     return true;
 }

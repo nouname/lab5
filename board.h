@@ -8,10 +8,6 @@
 
 class Board
 {
-    friend bool operator == (Board &left, Board &right) {
-        return left.matrix == right.matrix;
-    }
-
 public:
     Board(int M = 3, int N = 3);
     bool full();
@@ -20,14 +16,15 @@ public:
     void set(Player* player);
     Player *get(int x, int y);
     bool save();
-    bool load();
+    Board* load();
+    bool equal(Board *other);
+    void display();
 
 private:
     int M = 3;
     int N = 3;
     Player ***matrix;
     void init();
-    void display();
 };
 
 #endif // BOARD_H

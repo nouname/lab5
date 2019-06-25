@@ -80,10 +80,7 @@ bool check_session() {
 }
 
 bool rival_move() {
-    Board* old = new Board(M, N);
-    memcpy(old, board, sizeof(Board));
-    board->load();
-    return old != board;
+    return board->equal(board->load());
 }
 
 bool init_session(QString ip) {
@@ -129,20 +126,20 @@ void move(Player* player) {
 }
 
 char start() {
-    char exit = SPACE;
     board = new Board(M, N);
     do {
         Player *player = new Player(new Point(), character);
+        board->load();
+        board->display();
         move(player);
-        cout << "Ожидание хода игрока..." << endl;
-        if (!wait(rival_move, "Потеряна связь с игороком...")) {
-            cout << "Потеряна связь с игороком...";
-            exit = 'T';
+        if (!wait(rival_move, "Ожидание хода игрока...")) {
+            cout << "Потеряна связь с игороком." << endl;
+            return 'T';
         }
         if (board->isTerminal())
             break;
 
-    } while (!board->isTerminal() && exit == SPACE);
+    } while (!board->isTerminal());
     return board->win('X');
 }
 
@@ -163,8 +160,10 @@ int main(int argc, char *argv[])
 
     cout << "Вы - " << character << endl;
     char done = start();
-    if (done == 'T')
+    if (done == 'T') {
+        wait(close_session, s);
         return 0;
+    }
     if(done == character)
         cout << "Вы победили." << endl;
     else if (board->full())
