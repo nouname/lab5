@@ -133,9 +133,9 @@ char start() {
         board->load();
         if (board->isTerminal())
             break;
-        board->load();
         player = new Player(new Point(), character);
         move(player);
+        board->load();
 
     } while (!board->isTerminal());
     return board->win(character);
