@@ -75,6 +75,7 @@ bool check_session() {
 }
 
 bool rival_move() {
+    board->load();
     QByteArray contents = response("move");
     return contents[0] != character || contents.isEmpty();
 }
@@ -125,17 +126,14 @@ char start() {
     else
         board->display();
     do {
-        board->load();
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
-        board->load();
         if (board->isTerminal())
             break;
         player = new Player(new Point(), character);
         move(player);
-        board->load();
 
     } while (!board->isTerminal());
     return board->win(character);
