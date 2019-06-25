@@ -105,7 +105,7 @@ bool init_session(QString ip) {
 void move(Player* player) {
     int x = 0, y = 0;
 
-    cout << "Введите координаты Х." << endl;
+    cout << "Введите координаты " << character << ": ";
     cin >> x >> y;
     x--;
     y--;
@@ -132,6 +132,7 @@ char start() {
     do {
         Player *player = new Player(new Point(), character);
         move(player);
+        cout << "Ожидание хода игрока..." << endl;
         if (!wait(rival_move, "Потеряна связь с игороком...")) {
             cout << "Потеряна связь с игороком...";
             return 'T';
