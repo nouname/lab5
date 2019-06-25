@@ -138,7 +138,7 @@ void Board::load() {
     if (status != 200)
         return;
 
-    string contents = response->readAll().toStdString();
+    string contents = response->readAll().data();
     for (unsigned i = 0; i < contents.length(); i++) {
         unsigned column = i % static_cast<unsigned>(N);
         *matrix[(i - column) / static_cast<unsigned>(N)][column] = contents[i];
