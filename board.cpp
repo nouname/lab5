@@ -13,6 +13,7 @@ Board::Board(int M, int N)
     this->M = M;
     this->N = N;
     init();
+    save();
 }
 
 void Board::init()
