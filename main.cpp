@@ -82,7 +82,7 @@ bool check_session() {
 }
 
 bool rival_move() {
-    return !board->equal(board->load());
+    return board->equal(board->load());
 }
 
 bool init_session(QString ip) {
