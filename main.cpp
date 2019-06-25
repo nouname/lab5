@@ -102,6 +102,7 @@ bool init_session(QString ip) {
 }
 
 void move(Player* player) {
+    board->display();
     board = board->load();
     int x = 0, y = 0;
 
@@ -125,16 +126,16 @@ void move(Player* player) {
     }
     player->setPos(x, y);
     board->set(player);
+    board->display();
     board->save();
 }
 
 char start() {
     board = new Board(M, N);
-    do {
-        Player *player = new Player(new Point(), character);
-        board->display();
+    Player *player = new Player(new Point(), character);
+    if (character == 'X')
         move(player);
-        board->display();
+    do {
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
@@ -142,6 +143,8 @@ char start() {
         if (board->isTerminal())
             break;
         board->load();
+        player = new Player(new Point(), character);
+        move(player);
 
     } while (!board->isTerminal());
     return board->win('X');
