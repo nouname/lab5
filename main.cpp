@@ -76,8 +76,6 @@ bool check_session() {
 
 bool rival_move() {
     QByteArray contents = response("move");
-    board->load();
-    board->save();
     return contents[0] != character || contents.isEmpty();
 }
 
