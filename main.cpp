@@ -91,7 +91,6 @@ bool init_session(QString ip) {
 
 void move(Player* player) {
     int x = 0, y = 0;
-    board->load();
     board->display();
     cout << "Введите координаты " << character << ": " << endl;
     cin >> x >> y;
@@ -115,7 +114,6 @@ void move(Player* player) {
     board->set(player);
     response("move.php?move=" + QString(character));
     board->save();
-    board->load();
     board->display();
 }
 
@@ -127,10 +125,12 @@ char start() {
     else
         board->display();
     do {
+        board->load();
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
+        board->load();
         if (board->isTerminal())
             break;
         board->load();
