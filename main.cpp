@@ -8,7 +8,7 @@
 #include <qnetworkaccessmanager.h>
 #include <QNetworkReply>
 
-#define DELIMETER '+'
+#define DELIMETER '\n'
 
 static Board* board;
 static int M = 3, N = 3;
@@ -33,18 +33,20 @@ bool init_session(QString ip) {
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return !contents.isEmpty();
+    return contents.isEmpty();
 }
 
 bool close_session() {
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=";
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?clear";
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return !contents.isEmpty();
+    cout << "Ожидание закрытия игровой сессии..." << endl;
+    return contents.isEmpty();
+
 }
 
 bool check_session() {
@@ -109,17 +111,21 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     if (!init_session(get_ip())) {
         cout << "Не удалось инициализировать игровую сессию." << endl;
-        cout << "Ожидание закрытия игровой сессии..." << endl;
         while (!close_session());
         return 0;
     }
     long timeout = 60000000000;
-    cout << "Ожидание подключения игрока..." << endl;
-    while (!check_session() && timeout)
+    char quit = '\0';
+    cout << "Ожидание подключения игрока." << endl << "Введите q для выхода..." << endl;
+    while (!check_session() && timeout && (quit = getchar()) != 'q') {
         timeout--;
+    }
+    if (quit == 'q') {
+        while (!close_session());
+        return 0;
+    }
     if (!timeout) {
         cout << "Нет подключения." << endl;
-        cout << "Ожидание закрытия игровой сессии..." << endl;
         while (!close_session());
         return 0;
     }
@@ -131,7 +137,6 @@ int main(int argc, char *argv[])
         cout << "Ничья." << endl;
     else
         cout << "O победил." << endl;
-    cout << "Ожидание закрытия игровой сессии..." << endl;
     while (!close_session());
     return 0;
 }

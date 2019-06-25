@@ -122,7 +122,7 @@ bool Board::save() {
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return contents.isEmpty();
+    return !contents.isEmpty();
 
 }
 
