@@ -135,12 +135,13 @@ char start() {
         board->display();
         move(player);
         board->display();
-        if (!wait(rival_move, "Ожидание хода игрока...")) {
-            cout << "Потеряна связь с игороком." << endl;
+        if (!wait(rival_move, "Ожидание хода противника...")) {
+            cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
         if (board->isTerminal())
             break;
+        board->load();
 
     } while (!board->isTerminal());
     return board->win('X');
@@ -170,8 +171,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (!wait(check_session, "Ожидание подключения игрока...")) {
-        cout << "Нет подключения." << endl;
+    if (!wait(check_session, "Ожидание соединения игроков...")) {
+        cout << "Нет соединения." << endl;
         return 0;
     }
 
