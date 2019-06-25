@@ -60,28 +60,6 @@ char rival_character() {
     return contents.split(SPACE)[1][0];
 }
 
-bool rival_move() {
-    Board* old = new Board(M, N);
-    memcpy(old, board, sizeof(Board));
-    board->load();
-    return old != board;
-}
-
-bool init_session(QString ip) {
-    close_session();
-    character = rival_character() == 'X' ? 'O' : 'X';
-
-    cout << ip.toStdString() << endl;
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + SPACE + character + DELIMETER;
-    QNetworkAccessManager manager;
-    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
-    QEventLoop event;
-    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
-    event.exec();
-    QByteArray contents = response->readAll();
-    return contents.isEmpty() && character != SPACE;
-}
-
 bool check_session() {
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/session";
     QNetworkAccessManager manager;
@@ -99,6 +77,29 @@ bool check_session() {
     QByteArray contents = response->readAll();
     QList<QByteArray> session = contents.split(DELIMETER);
     return session.length() == 3 && session[0] != session[1];
+}
+
+bool rival_move() {
+    Board* old = new Board(M, N);
+    memcpy(old, board, sizeof(Board));
+    board->load();
+    return old != board;
+}
+
+bool init_session(QString ip) {
+    if (check_session())
+        close_session();
+    character = rival_character() == 'X' ? 'O' : 'X';
+
+    cout << ip.toStdString() << endl;
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + SPACE + character + DELIMETER;
+    QNetworkAccessManager manager;
+    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
+    QEventLoop event;
+    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    event.exec();
+    QByteArray contents = response->readAll();
+    return contents.isEmpty() && character != SPACE;
 }
 
 void move(Player* player) {
