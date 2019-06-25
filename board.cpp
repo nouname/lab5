@@ -5,7 +5,6 @@
 #include <QString>
 #include <iostream>
 #include <QFile>
-#include <qprocess.h>
 
 using namespace std;
 
@@ -111,9 +110,8 @@ bool Board::save() {
     QString s = "";
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++)
-            s += matrix[i][j]->getChar();
-        if (i < M - 1)
-            s += '\n';
+            s += QString(matrix[i][j]->getChar());
+        s += "\n";
     }
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save.php?board=" + s;
     QNetworkAccessManager manager;
