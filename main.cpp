@@ -82,7 +82,7 @@ bool check_session() {
 }
 
 bool rival_move() {
-    return board->equal(board->load());
+    return !board->equal(board->load());
 }
 
 bool init_session(QString ip) {
@@ -131,10 +131,10 @@ char start() {
     board = new Board(M, N);
     do {
         Player *player = new Player(new Point(), character);
-        board->load();
+        board = board->load();
         board->display();
         move(player);
-        board->load();
+        board = board->load();
         board->display();
         if (!wait(rival_move, "Ожидание хода игрока...")) {
             cout << "Потеряна связь с игороком." << endl;
@@ -159,11 +159,9 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     struct sigaction handler;
-
     handler.sa_handler = terminate;
     sigemptyset(&handler.sa_mask);
     handler.sa_flags = 0;
-
     sigaction(SIGINT, &handler, nullptr);
 
     const string s = "Ожидание закрытия игровой сессии...";
