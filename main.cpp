@@ -75,6 +75,7 @@ bool check_session() {
 }
 
 bool rival_move() {
+    board->load();
     QByteArray contents = response("move");
     return contents[0] != character || contents.isEmpty();
 }
@@ -136,7 +137,7 @@ char start() {
         move(player);
 
     } while (!board->isTerminal());
-    return board->win('X');
+    return board->win(character);
 }
 
 void terminate(int s) {
