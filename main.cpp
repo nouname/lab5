@@ -143,6 +143,7 @@ char start() {
         if (board->isTerminal())
             break;
         player = new Player(new Point(), character);
+        board->load();
         move(player);
 
     } while (!board->isTerminal());
