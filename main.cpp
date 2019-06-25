@@ -130,6 +130,7 @@ char start() {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
+        board->load();
         if (board->isTerminal())
             break;
         player = new Player(new Point(), character);
