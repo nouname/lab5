@@ -14,7 +14,7 @@
 #define TIMEOUT 100000000000
 
 static char character = SPACE;
-static Board *board, *old;
+static Board *board;
 static int M = 3, N = 3;
 
 using namespace std;
@@ -114,19 +114,17 @@ void move(Player* player) {
     board->set(player);
     response("move.php?move=" + QString(character));
     board->save();
-    board->load();
     board->display();
 }
 
 char start() {
     board = new Board(M, N);
-    old = new Board(M, N);
     Player *player = new Player(new Point(), character);
     board->display();
     if (character == 'X')
         move(player);
     do {
-        old->load();
+        board->load();
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
