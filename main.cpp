@@ -82,6 +82,7 @@ bool check_session() {
 }
 
 bool rival_move() {
+    board->load();
     return !board->equal(old);
 }
 
@@ -135,6 +136,7 @@ char start() {
     if (character == 'X')
         move(player);
     do {
+        old->load();
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
@@ -142,9 +144,7 @@ char start() {
         if (board->isTerminal())
             break;
         player = new Player(new Point(), character);
-        old->load();
         move(player);
-        board->load();
 
     } while (!board->isTerminal());
     return board->win('X');
