@@ -114,7 +114,7 @@ bool Board::save() {
             s += matrix[i][j]->getChar();
         s += '\n';
     }
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save.php?" + s;
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save.php?board=" + s;
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
