@@ -75,7 +75,6 @@ bool check_session() {
 }
 
 bool rival_move() {
-    board->load();
     QByteArray contents = response("move");
     return contents[0] != character || contents.isEmpty();
 }
@@ -93,7 +92,6 @@ bool init_session(QString ip) {
 void move(Player* player) {
     int x = 0, y = 0;
     board->load();
-    board->display();
     cout << "Введите координаты " << character << ": " << endl;
     cin >> x >> y;
     x--;
@@ -123,10 +121,9 @@ void move(Player* player) {
 char start() {
     board = new Board(M, N);
     Player *player = new Player(new Point(), character);
+    board->display();
     if (character == 'X')
         move(player);
-    else
-        board->display();
     do {
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
