@@ -97,7 +97,12 @@ int main(int argc, char *argv[])
         std::cout << "Не удалось инициализировать игровую сессию." << std::endl;
     long timeout = 60000000000;
     std::cout << "Ожидание подключения игрока..." << std::endl;
-    while (!check_session() && timeout);
+    while (!check_session() && timeout)
+        timeout--;
+    if (!timeout) {
+        std::cout << "Нет подключения." << std::endl;
+        return 0;
+    }
     std::cout << "Вы - X" << std::endl << std::endl;
     char done = start();
     if(done == 'X')
