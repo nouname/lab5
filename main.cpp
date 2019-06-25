@@ -117,13 +117,13 @@ void move(Player* player) {
     board->set(player);
     response("move.php?move=" + QString(character));
     board->save();
+    board->load();
     board->display();
 }
 
 char start() {
     board = new Board(M, N);
     Player *player = new Player(new Point(), character);
-    board->display();
     if (character == 'X')
         move(player);
     else
