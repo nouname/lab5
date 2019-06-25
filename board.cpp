@@ -114,17 +114,17 @@ bool Board::save() {
             s += matrix[i][j]->getChar();
         s += '\n';
     }
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save/php?" + s;
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/save.php?" + s;
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return !contents.isEmpty();
+    return contents.isEmpty();
 
 }
-Board* Board::load() {
+void Board::load() {
     QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/board";
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
@@ -136,15 +136,13 @@ Board* Board::load() {
     int status = statusCode.toInt();
 
     if (status != 200)
-        return nullptr;
+        return;
 
-    Board* board = new Board(M, N);
     QByteArray contents = response->readAll();
     for (int i = 0; i < contents.length(); i++) {
         int column = i % N;
-        *board->matrix[(i - column) / N][column] = contents[i];
+        *matrix[(i - column) / N][column] = contents[i];
     }
-    return board;
 }
 
 bool Board::equal(Board *other)
