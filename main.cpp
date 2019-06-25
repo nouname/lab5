@@ -27,14 +27,26 @@ QString get_ip() {
     }
     return "";
 }
-bool close_session() {
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?clear=1";
+
+QByteArray response(QString file) {
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/" + file;
     QNetworkAccessManager manager;
-    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
+    QNetworkReply *reply= manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
-    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    QObject::connect(reply, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
-    QByteArray contents = response->readAll();
+
+    QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    int status = statusCode.toInt();
+
+    if (status != 200)
+        return "";
+
+    return reply->readAll();
+}
+
+bool close_session() {
+    QByteArray contents = response("init.php?clear=1");
     return contents.isEmpty();
 }
 
@@ -48,13 +60,7 @@ long wait(bool (*f)(), string msg) {
 
 char rival_character() {
     srand(static_cast<unsigned>(time(nullptr)));
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/session";
-    QNetworkAccessManager manager;
-    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
-    QEventLoop event;
-    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
-    event.exec();
-    QByteArray contents = response->readAll();
+    QByteArray contents = response("session");
     if (contents.isEmpty()) {
         char c[2] = {'X', 'O'};
         return c[rand() % 2];
@@ -63,28 +69,14 @@ char rival_character() {
 }
 
 bool check_session() {
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/session";
-    QNetworkAccessManager manager;
-    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
-    QEventLoop event;
-    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
-    event.exec();
-
-    QVariant statusCode = response->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-    int status = statusCode.toInt();
-
-    if (status != 200)
-        return false;
-
-    QByteArray contents = response->readAll();
+    QByteArray contents = response("session");
     QList<QByteArray> session = contents.split(DELIMETER);
     return session.length() == 3 && session[0] != session[1];
 }
 
 bool rival_move() {
-    bool result = board->equal(old);
-    old->load();
-    return result;
+    QByteArray contents = response("move");
+    return contents[0] != character;
 }
 
 bool init_session(QString ip) {
@@ -93,13 +85,7 @@ bool init_session(QString ip) {
     character = rival_character() == 'X' ? 'O' : 'X';
 
     cout << ip.toStdString() << endl;
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + SPACE + character + DELIMETER;
-    QNetworkAccessManager manager;
-    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
-    QEventLoop event;
-    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
-    event.exec();
-    QByteArray contents = response->readAll();
+    QByteArray contents = response("init.php?ip=" + ip + SPACE + character + DELIMETER);
     return contents.isEmpty() && character != SPACE;
 }
 
@@ -126,6 +112,7 @@ void move(Player* player) {
     }
     player->setPos(x, y);
     board->set(player);
+    response("move.php?move=" + QString(character));
     board->save();
     board->load();
     board->display();
