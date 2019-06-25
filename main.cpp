@@ -2,6 +2,8 @@
 #include "player.h"
 #include <iostream>
 #include <vector>
+#include <signal.h>
+#include <sstream>
 #include <QCoreApplication>
 #include <QHostAddress>
 #include <QNetworkInterface>
@@ -145,9 +147,25 @@ char start() {
     return board->win('X');
 }
 
+void terminate(int s) {
+    stringstream ss;
+    ss << endl << "Получен сигнал " << s << ".\nОжидание закрытия игровой сессии...";
+    wait(close_session, ss.str());
+    exit(1);
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+
+    struct sigaction handler;
+
+    handler.sa_handler = terminate;
+    sigemptyset(&handler.sa_mask);
+    handler.sa_flags = 0;
+
+    sigaction(SIGINT, &handler, nullptr);
+
     const string s = "Ожидание закрытия игровой сессии...";
     if (!init_session(get_ip())) {
         cout << "Не удалось инициализировать игровую сессию." << endl;
