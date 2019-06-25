@@ -123,7 +123,9 @@ void move(Player* player) {
     }
     player->setPos(x, y);
     board->set(player);
+    old->load();
     board->save();
+    board->load();
     board->display();
 }
 
@@ -135,7 +137,6 @@ char start() {
     if (character == 'X')
         move(player);
     do {
-        old->load();
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
@@ -143,7 +144,6 @@ char start() {
         if (board->isTerminal())
             break;
         player = new Player(new Point(), character);
-        board->load();
         move(player);
 
     } while (!board->isTerminal());
