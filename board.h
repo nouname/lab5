@@ -8,6 +8,10 @@
 
 class Board
 {
+    friend bool operator == (Board &left, Board &right) {
+        return left.matrix == right.matrix;
+    }
+
 public:
     Board(int M = 3, int N = 3);
     bool full();
