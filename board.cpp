@@ -138,10 +138,10 @@ void Board::load() {
     if (status != 200)
         return;
 
-    QByteArray contents = response->readAll();
-    for (int i = 0; i < contents.length(); i++) {
-        int column = i % N;
-        *matrix[(i - column) / N][column] = contents[i];
+    string contents = response->readAll().toStdString();
+    for (unsigned i = 0; i < contents.length(); i++) {
+        unsigned column = i % static_cast<unsigned>(N);
+        *matrix[(i - column) / static_cast<unsigned>(N)][column] = contents[i];
     }
 }
 
