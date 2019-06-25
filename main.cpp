@@ -23,18 +23,29 @@ QString get_ip() {
 }
 
 bool init_session(QString ip) {
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/init.php?" + ip + DELIMETER;
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=" + ip + DELIMETER;
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
     QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
     QByteArray contents = response->readAll();
-    return !contents.isEmpty();
+    return contents.isEmpty();
+}
+
+bool close_session() {
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/init.php?ip=";
+    QNetworkAccessManager manager;
+    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
+    QEventLoop event;
+    QObject::connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    event.exec();
+    QByteArray contents = response->readAll();
+    return contents.isEmpty();
 }
 
 bool check_session() {
-    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/board";
+    QString url = "http://kappa.cs.petrsu.ru/~madrahim/tic_tac_toe/session";
     QNetworkAccessManager manager;
     QNetworkReply *response = manager.get(QNetworkRequest(QUrl(url)));
     QEventLoop event;
@@ -111,5 +122,8 @@ int main(int argc, char *argv[])
         std::cout << "Ничья." << std::endl;
     else
         std::cout << "O победил." << std::endl;
+
+    std::cout << "Ожидание закрытия игровой сессии..." << std::endl;
+    while (!close_session());
     return 0;
 }
