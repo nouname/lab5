@@ -76,6 +76,7 @@ bool check_session() {
 
 bool rival_move() {
     QByteArray contents = response("move");
+    board->load();
     return contents[0] != character || contents.isEmpty();
 }
 
@@ -114,7 +115,6 @@ void move(Player* player) {
     board->set(player);
     response("move.php?move=" + QString(character));
     board->save();
-    board->load();
     board->display();
 }
 
