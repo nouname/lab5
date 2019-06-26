@@ -140,7 +140,6 @@ bool get_size() {
 }
 
 char start() {
-
     Player *player = new Player(new Point(), character);
     if (character == 'X') {
         set_size();
@@ -155,19 +154,11 @@ char start() {
     }
     do {
         board->load();
-        if (board->isTerminal()) {
-            board->display();
-            break;
-        }
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
         board->load();
-        if (board->isTerminal()) {
-            board->display();
-            break;
-        }
         player = new Player(new Point(), character);
         move(player);
 
@@ -212,10 +203,11 @@ int main(int argc, char *argv[])
     }
     if (done == character)
         cout << "Вы победили." << endl;
-    else if (done == SPACE)
-        cout << "Вы проиграли." << endl;
-    else
+    else if (board->full())
         cout << "Ничья." << endl;
+    else
+        cout << "Вы проиграли." << endl;
+
     wait(close_session, s);
     return 0;
 }
