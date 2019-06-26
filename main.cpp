@@ -211,9 +211,10 @@ int main(int argc, char *argv[])
         wait(close_session, s);
         return 0;
     }
+    board->load();
     if(done == character)
         cout << "Вы победили." << endl;
-    else if (done == SPACE && board->full())
+    else if (board->full())
         cout << "Ничья." << endl;
     else
         cout << "Вы проиграли." << endl;
