@@ -101,6 +101,7 @@ bool Board::isTerminal() {
 void Board::set(Player *player)
 {
     matrix[player->getPos()->x][player->getPos()->y] = player;
+    save();
 }
 
 Player* Board::get(int x, int y) {

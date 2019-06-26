@@ -113,8 +113,6 @@ void move(Player* player) {
     player->setPos(x, y);
     board->set(player);
     response("move.php?move=" + QString(character));
-    board->save();
-    board->display();
 }
 
 char start() {
