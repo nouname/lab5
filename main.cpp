@@ -208,6 +208,7 @@ int main(int argc, char *argv[])
     else
         cout << "Вы проиграли." << endl;
 
+    board->save();
     wait(close_session, s);
     return 0;
 }
