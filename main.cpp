@@ -15,7 +15,7 @@
 
 static char character = SPACE;
 static Board *board;
-static int M = 3, N = 3;
+static int M = 0, N = 0;
 
 using namespace std;
 
