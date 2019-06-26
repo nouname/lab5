@@ -121,7 +121,7 @@ bool set_size() {
         return false;
     while (M < 1 || N < 1 || M > 10 || N > 10) {
         cout << "Введите M, N: ";
-        scanf("%d%d", &M, &N);
+        cin >> M >> N;
         if (M < 1 || N < 1)
             cout << "Значения должны превышать число 0. Повторите ввод.\n";
         else if (M > 10 || N > 10)
@@ -131,6 +131,8 @@ bool set_size() {
 }
 
 bool get_size() {
+    if (response("size") == nullptr)
+        return false;
     QList<QByteArray> contents = response("size").split(DELIMETER);
     if (contents.isEmpty())
         return false;
