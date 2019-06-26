@@ -86,8 +86,8 @@ char Board::win(char player) {
             return player;
 
         count = 0;
-        for (i = 0; i < M; i++)
-            if (*matrix[i][M - i - 1] == player)
+        for (i = 1; i <= M; i++)
+            if (*matrix[M - i][M - i] == player)
                 count++;
         if (count >= M)
             return player;
@@ -96,7 +96,6 @@ char Board::win(char player) {
 }
 
 bool Board::isTerminal() {
-    load();
     return full() || win('X') != SPACE || win('O') != SPACE;
 }
 

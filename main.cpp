@@ -156,6 +156,7 @@ char start() {
     do {
         board->load();
         if (board->isTerminal()) {
+            response("move.php?move=" + QString(character == 'X' ? 'O' : 'X'));
             board->display();
             break;
         }
@@ -165,6 +166,7 @@ char start() {
         }
         board->load();
         if (board->isTerminal()) {
+            response("move.php?move=" + QString(character == 'X' ? 'O' : 'X'));
             board->display();
             break;
         }
@@ -172,7 +174,6 @@ char start() {
         move(player);
 
     } while (!board->isTerminal());
-    board->save();
     return board->win(character);
 }
 
@@ -211,7 +212,7 @@ int main(int argc, char *argv[])
         wait(close_session, s);
         return 0;
     }
-    if(done == character)
+    if (done == character)
         cout << "Вы победили." << endl;
     else if (board->full())
         cout << "Ничья." << endl;
