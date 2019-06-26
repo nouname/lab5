@@ -124,12 +124,12 @@ char start() {
     else
         board->display();
     do {
+        if (board->isTerminal())
+            break;
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
-        if (board->isTerminal())
-            break;
         player = new Player(new Point(), character);
         move(player);
 
