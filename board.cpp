@@ -58,6 +58,7 @@ void Board::display() {
 }
 
 char Board::win(char player) {
+    load();
     int i, j, count;
     for(i = 0; i < M; i++) {
         count = 0;

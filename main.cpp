@@ -165,6 +165,11 @@ char start() {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
+        board->load();
+        if (board->isTerminal()) {
+            board->display();
+            break;
+        }
         player = new Player(new Point(), character);
         move(player);
 
