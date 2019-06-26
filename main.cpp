@@ -116,27 +116,40 @@ void move(Player* player) {
     response("move.php?move=" + QString(character));
 }
 
-void size() {
+bool set_size() {
     if (character != 'X')
-        return;
+        return false;
     while (M < 1 || N < 1 || M > 10 || N > 10) {
-        cout << "Введите M, N: " << endl;
-        cin >> M >> N;
+        cout << "Введите M, N: ";
+        scanf("%d%d", &M, &N);
         if (M < 1 || N < 1)
             cout << "Значения должны превышать число 0. Повторите ввод.\n";
         else if (M > 10 || N > 10)
             cout << "Значения не должны превышать число 10. Повторите ввод.\n";
     }
+    return response("resize.php?size=" + QString::number(M) + DELIMETER + QString::number(N)).isEmpty();
+}
+
+bool get_size() {
+    QList<QByteArray> contents = response("size").split(DELIMETER);
+    if (contents.isEmpty())
+        return false;
+    M = contents[0].toInt();
+    N = contents[1].toInt();
+    return true;
 }
 
 char start() {
+
     Player *player = new Player(new Point(), character);
     if (character == 'X') {
-        size();
+        set_size();
         board = new Board(M, N);
         move(player);
     }
     else {
+        if (!wait(get_size, "Противник устанавливает размер игрового поля..."))
+             cout << "Потеряна связь с противником." << endl;
         board = new Board(M, N);
         board->display();
     }
