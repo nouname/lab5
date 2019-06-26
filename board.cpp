@@ -58,7 +58,6 @@ void Board::display() {
 }
 
 char Board::win(char player) {
-    load();
     int i, j, count;
     for(i = 0; i < M; i++) {
         count = 0;
@@ -97,7 +96,7 @@ char Board::win(char player) {
 }
 
 bool Board::isTerminal() {
-    save();
+    load();
     return full() || win('X') != SPACE || win('O') != SPACE;
 }
 
