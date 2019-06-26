@@ -159,6 +159,7 @@ char start() {
         board->load();
         if (board->isTerminal()) {
             board->display();
+            board->save();
             break;
         }
         if (!wait(rival_move, "Ожидание хода противника...")) {
@@ -168,6 +169,7 @@ char start() {
         board->load();
         if (board->isTerminal()) {
             board->display();
+            board->save();
             break;
         }
         player = new Player(new Point(), character);
