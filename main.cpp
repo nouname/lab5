@@ -161,6 +161,7 @@ char start() {
         board->load();
         player = new Player(new Point(), character);
         move(player);
+        board->load();
     }
     return board->win(character);
 }
