@@ -91,7 +91,6 @@ bool init_session(QString ip) {
 
 void move(Player* player) {
     int x = 0, y = 0;
-    board->load();
     board->display();
     cout << "Введите координаты " << character << ": " << endl;
     cin >> x >> y;
@@ -134,7 +133,6 @@ char start() {
             break;
         player = new Player(new Point(), character);
         move(player);
-        board->load();
 
     } while (!board->isTerminal());
     return board->win(character);
