@@ -133,7 +133,6 @@ char start() {
             break;
         player = new Player(new Point(), character);
         move(player);
-        delete player;
 
     } while (!board->isTerminal());
     return board->win(character);
