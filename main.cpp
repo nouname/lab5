@@ -214,10 +214,10 @@ int main(int argc, char *argv[])
     }
     if (done == character)
         cout << "Вы победили." << endl;
-    else if (board->full())
-        cout << "Ничья." << endl;
-    else
+    else if (done == SPACE)
         cout << "Вы проиграли." << endl;
+    else
+        cout << "Ничья." << endl;
     board->save();
     wait(close_session, s);
     return 0;
