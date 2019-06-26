@@ -96,11 +96,11 @@ char Board::win(char player) {
 
 bool Board::isTerminal() {
     load();
+    save();
     return full() || win('X') != SPACE || win('O') != SPACE;
 }
 
-void Board::set(Player *player)
-{
+void Board::set(Player *player) {
     matrix[player->getPos()->x][player->getPos()->y] = player;
     save();
 }
