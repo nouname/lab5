@@ -173,7 +173,6 @@ char start() {
 
     } while (!board->isTerminal());
     board->save();
-    board->load();
     return board->win(character);
 }
 
@@ -214,7 +213,7 @@ int main(int argc, char *argv[])
     }
     if(done == character)
         cout << "Вы победили." << endl;
-    else if (board->full())
+    else if (done == SPACE && board->full())
         cout << "Ничья." << endl;
     else
         cout << "Вы проиграли." << endl;
