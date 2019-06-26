@@ -116,11 +116,26 @@ void move(Player* player) {
     response("move.php?move=" + QString(character));
 }
 
+void size() {
+    if (character != 'X')
+        return;
+    while (M < 1 || N < 1 || M > 10 || N > 10) {
+        cout << "Введите M, N: ";
+        scanf("%d%d", &M, &N);
+        if (M < 1 || N < 1)
+            cout << "Значения должны превышать число 0. Повторите ввод.\n";
+        else if (M > 10 || N > 10)
+            cout << "Значения не должны превышать число 10. Повторите ввод.\n";
+    }
+}
+
 char start() {
     board = new Board(M, N);
     Player *player = new Player(new Point(), character);
-    if (character == 'X')
+    if (character == 'X') {
+        size();
         move(player);
+    }
     else
         board->display();
     do {
