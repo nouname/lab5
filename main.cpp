@@ -156,6 +156,9 @@ char start() {
         board->display();
     }
     do {
+        board->load();
+        if (board->isTerminal())
+            break;
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
