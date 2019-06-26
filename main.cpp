@@ -156,20 +156,20 @@ char start() {
     }
     do {
         board->load();
-        if(board->isTerminal())
+        if (board->isTerminal())
             break;
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
         }
         board->load();
-        if(board->isTerminal())
+        if (board->isTerminal())
             break;
         player = new Player(new Point(), character);
         move(player);
         board->load();
     }
-    while (!board->isTerminal()));
+    while (!board->isTerminal());
     return board->win(character);
 }
 
