@@ -112,6 +112,7 @@ void move(Player* player) {
     }
     player->setPos(x, y);
     board->set(player);
+    board->display();
     response("move.php?move=" + QString(character));
 }
 
