@@ -173,6 +173,7 @@ char start() {
 
     } while (!board->isTerminal());
     board->save();
+    board->load();
     return board->win(character);
 }
 
