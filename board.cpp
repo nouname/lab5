@@ -86,8 +86,8 @@ char Board::win(char player) {
             return player;
 
         count = 0;
-        for (i = 1; i <= M; i++)
-            if (*matrix[M - i][M - i] == player)
+        for (i = 0; i < M; i++)
+            if (*matrix[i][M - i - 1] == player)
                 count++;
         if (count >= M)
             return player;
