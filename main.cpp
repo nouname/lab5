@@ -71,7 +71,7 @@ char rival_character() {
 bool check_session() {
     QByteArray contents = response("session");
     QList<QByteArray> session = contents.split(DELIMETER);
-    return session.length() == 3 && session[0] != session[1];
+    return session.length() == 3 && session[0].split(SPACE)[0] != session[1].split(SPACE)[0];
 }
 
 bool rival_move() {
@@ -80,8 +80,6 @@ bool rival_move() {
 }
 
 bool init_session(QString ip) {
-    if (check_session())
-        close_session();
     character = rival_character() == 'X' ? 'O' : 'X';
 
     cout << ip.toStdString() << endl;
