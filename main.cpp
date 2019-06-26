@@ -148,17 +148,14 @@ char start() {
         move(player);
     }
     else {
-        if (!wait(get_size, "Противник устанавливает размер игрового поля..."))
+        if (!wait(get_size, "Противник устанавливает размер игрового поля...")) {
              cout << "Потеряна связь с противником." << endl;
+             return 'T';
+        }
         board = new Board(M, N);
         board->display();
     }
-    do {
-        board->load();
-        if (board->isTerminal()) {
-            board->display();
-            break;
-        }
+    while (!board->isTerminal()) {
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
             return 'T';
@@ -171,7 +168,7 @@ char start() {
         player = new Player(new Point(), character);
         move(player);
 
-    } while (!board->isTerminal());
+    }
     return board->win(character);
 }
 
