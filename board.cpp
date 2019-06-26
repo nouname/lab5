@@ -96,6 +96,7 @@ char Board::win(char player) {
 }
 
 bool Board::isTerminal() {
+    load();
     return full() || win('X') != SPACE || win('O') != SPACE;
 }
 
