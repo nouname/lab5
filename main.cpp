@@ -76,7 +76,7 @@ bool check_session() {
 
 bool rival_move() {
     QByteArray contents = response("move");
-    return contents[0] != character || contents.isEmpty();
+    return contents[0] != character && !contents.isEmpty();
 }
 
 bool init_session(QString ip) {
