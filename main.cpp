@@ -172,7 +172,6 @@ char start() {
         move(player);
 
     } while (!board->isTerminal());
-    board->save();
     return board->win(character);
 }
 
@@ -211,14 +210,12 @@ int main(int argc, char *argv[])
         wait(close_session, s);
         return 0;
     }
-    board->load();
     if(done == character)
         cout << "Вы победили." << endl;
-    else if (done != character && done != SPACE)
-        cout << "Вы проиграли." << endl;
     else if (board->full())
         cout << "Ничья." << endl;
-
+    else
+        cout << "Вы проиграли." << endl;
     wait(close_session, s);
     return 0;
 }
