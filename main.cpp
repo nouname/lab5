@@ -172,6 +172,7 @@ char start() {
         move(player);
 
     } while (!board->isTerminal());
+    board->save();
     return board->win(character);
 }
 
