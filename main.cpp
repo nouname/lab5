@@ -120,8 +120,8 @@ void size() {
     if (character != 'X')
         return;
     while (M < 1 || N < 1 || M > 10 || N > 10) {
-        cout << "Введите M, N: ";
-        scanf("%d%d", &M, &N);
+        cout << "Введите M, N: " << endl;
+        cin >> M >> N;
         if (M < 1 || N < 1)
             cout << "Значения должны превышать число 0. Повторите ввод.\n";
         else if (M > 10 || N > 10)
@@ -130,14 +130,16 @@ void size() {
 }
 
 char start() {
-    board = new Board(M, N);
     Player *player = new Player(new Point(), character);
     if (character == 'X') {
         size();
+        board = new Board(M, N);
         move(player);
     }
-    else
+    else {
+        board = new Board(M, N);
         board->display();
+    }
     do {
         if (!wait(rival_move, "Ожидание хода противника...")) {
             cout << "Потеряна связь с противником." << endl;
