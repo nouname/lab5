@@ -27,6 +27,7 @@ void Board::init()
 }
 
 bool Board::full() {
+    load();
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++)
             if (*matrix[i][j] == SPACE)
